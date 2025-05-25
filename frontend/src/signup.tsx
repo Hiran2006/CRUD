@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -9,9 +10,29 @@ const Signup = () => {
   const [otp, setOtp] = useState(''); // Hidden OTP field
   const navigate = useNavigate();
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle signup logic here
+    if (!showOtp) {
+      try {
+        const result = await axios.post('/api/user/signup', {
+          name: name,
+          email: email,
+          pass: password,
+        });
+        if (result.data) setShowOtp(true); // Show OTP input after successful signup
+      } catch (err) {
+        console.log(err.response?.data.error);
+      }
+    } else {
+      try {
+        const result = await axios.post('/api/user/signup', {
+          email: email,
+          otp: otp,
+        });
+      } catch (err) {
+        console.log(err.response?.data.error);
+      }
+    }
   };
 
   return (

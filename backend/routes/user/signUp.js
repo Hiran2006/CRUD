@@ -1,6 +1,7 @@
 import db from '../../config/db.js';
+import transporter from '../../config/mailer.js';
+import mailer from '../../config/mailer.js';
 import bcrypt from 'bcryptjs';
-
 export default async (req, res) => {
   if (!req.body.otp) {
     return onSignUp(req, res);
@@ -34,7 +35,22 @@ const onSignUp = async (req, res) => {
       Number(process.env.BCRYPT_SALT_ROUNDS)
     );
     const otp = Math.floor(100000 + Math.random() * 900000);
-    console.log('OTP:', otp);
+    const mailInfo = await mailer.sendMail(
+      {
+        from: '"Example Team" <team@example.com>', // sender address
+        to: 'alice@example.com, bob@example.com', // list of receivers
+        subject: 'Hello', // Subject line
+        text: 'Hello world?', // plain text body
+        html: '<b>Hello world?</b>', // html body
+      },
+      (error, info) => {
+        if (error) {
+          console.log('Error sending email:', error);
+        } else {
+          console.log('Email sent:', info.response);
+        }
+      }
+    );
     await db.query(
       'insert into temp_users (email, password, name,otp) values ($1, $2, $3,$4)',
       [email, hashPass, name, otp]

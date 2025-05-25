@@ -8,6 +8,8 @@ const db = new Client({
   database: process.env.DB_NAME,
 });
 
-db.connect();
+db.connect().then(() => {
+  console.log('Database connected successfully');
+});
 
 export default db;
