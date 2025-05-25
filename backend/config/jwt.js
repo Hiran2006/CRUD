@@ -15,3 +15,5 @@ const getToken = token => {
     return null;
   }
 };
+
+export { setToken, getToken };

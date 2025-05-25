@@ -1,15 +1,12 @@
 import express from 'express';
+import 'dotenv/config.js';
 import bodyParser from 'body-parser';
-import dotenv from 'dotenv';
 import api from './routes/api.js';
-
-dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
 
 const port = process.env.SERVER_PORT || 8080;
-
 app.listen(port, err => {
   if (!err) {
     console.log(`Server is open at port ${port}`);
