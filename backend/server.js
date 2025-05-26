@@ -1,5 +1,6 @@
 import express from 'express';
 import 'dotenv/config.js';
+import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import api from './routes/api.js';
 import cors from 'cors';
@@ -7,6 +8,7 @@ import cors from 'cors';
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 const port = process.env.SERVER_PORT || 8080;
 app.listen(port, err => {

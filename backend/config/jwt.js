@@ -9,7 +9,7 @@ const setToken = data => {
 };
 const getToken = token => {
   try {
-    return jwt.verify(token);
+    return jwt.verify(token, process.env.TOKEN_SECRTE_KEY);
   } catch {
     console.error(`Error on token ${token}`);
     return null;
