@@ -1,6 +1,4 @@
 import db from '../../config/db.js';
-import transporter from '../../config/mailer.js';
-import mailer from '../../config/mailer.js';
 import bcrypt from 'bcryptjs';
 export default async (req, res) => {
   if (!req.body.otp) {
@@ -11,7 +9,19 @@ export default async (req, res) => {
 
 const onOtpSignUp = async (req, res) => {
   const { email, otp } = req.body;
-  res.end();
+  const result = await db.query(
+    'select * from temp_users where email = $1 and otp = $2',
+    [email, otp]
+  );
+  if (result.rows.length === 0) {
+    return res.status(400).json({ error: 'Invalid OTP' });
+  }
+  const { password, name } = result.rows[0];
+  await db.query(
+    'insert into users (email, password, name) values ($1, $2, $3)',
+    [email, password, name]
+  );
+  res.status(201).json({ message: 'User created successfully' });
 };
 
 const onSignUp = async (req, res) => {
@@ -35,22 +45,7 @@ const onSignUp = async (req, res) => {
       Number(process.env.BCRYPT_SALT_ROUNDS)
     );
     const otp = Math.floor(100000 + Math.random() * 900000);
-    const mailInfo = await mailer.sendMail(
-      {
-        from: '"Example Team" <team@example.com>', // sender address
-        to: 'alice@example.com, bob@example.com', // list of receivers
-        subject: 'Hello', // Subject line
-        text: 'Hello world?', // plain text body
-        html: '<b>Hello world?</b>', // html body
-      },
-      (error, info) => {
-        if (error) {
-          console.log('Error sending email:', error);
-        } else {
-          console.log('Email sent:', info.response);
-        }
-      }
-    );
+
     await db.query(
       'insert into temp_users (email, password, name,otp) values ($1, $2, $3,$4)',
       [email, hashPass, name, otp]

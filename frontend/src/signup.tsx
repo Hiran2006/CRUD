@@ -29,6 +29,10 @@ const Signup = () => {
           email: email,
           otp: otp,
         });
+        if (result.data) {
+          alert('Signup successful! Redirecting to login...');
+          navigate('/login'); // Redirect to login page after successful signup
+        }
       } catch (err) {
         console.log(err.response?.data.error);
       }
