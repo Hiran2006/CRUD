@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
-
+app.use(express.urlencoded({ extended: true }));
 const port = process.env.SERVER_PORT || 8080;
 app.listen(port, err => {
   if (!err) {

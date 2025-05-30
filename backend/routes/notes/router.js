@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import add from './add.js';
+import get from './get.js';
+import deleteRoute from './delete.js';
 import { getToken } from '../../config/jwt.js';
 
 const router = Router();
@@ -14,6 +16,9 @@ const authMiddleware = (req, res, next) => {
 };
 
 router.use(authMiddleware);
+
 router.post('/add', add);
+router.get('/get', get);
+router.delete('/delete', deleteRoute);
 
 export default router;
